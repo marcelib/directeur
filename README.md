@@ -48,4 +48,7 @@ local all all md5
 ```
   
 7. Restart database to load new configuration:
+```
 /etc/init.d/postgresql restart
+```
+Then you're good to go- the database is up and running :D
