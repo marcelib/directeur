@@ -12,26 +12,40 @@ To be able to use the database as default postgres user (otherwise you can chang
 1. Login as postgres superuser
 ``` 
 sudo su
-su - postgres ```
+su - postgres 
+```
   
-2.Enter local postgres instance
-```psql```
+2. Enter local postgres instance
+```
+psql
+```
   
 3. Set password for postgres user
-```\password
+```
+\password
 Enter new password:
-Enter it again:```
+Enter it again:
+```
   
 4. Disconnect from postgres
-```\q```
+```
+\q
+```
   
 5. Go back to root and editing postgres config
-```vim /etc/postgresql/9.4/main/pg_hba.conf```
+```
+vim /etc/postgresql/9.4/main/pg_hba.conf
+```
   
 6. Change line 
-```"local all all peer" ```(should be the first uncommented one)
+```
+local all all peer
+ ```
+(the line should be the first uncommented one)
 to
-```"local all all md5"```
+```
+local all all md5
+```
   
 7. Restart database to load new configuration:
 /etc/init.d/postgresql restart
