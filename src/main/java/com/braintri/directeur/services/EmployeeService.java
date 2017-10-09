@@ -38,6 +38,9 @@ public class EmployeeService {
 
     public EmployeeDto getEmployee(Long id) {
         Employee employee = employeeRepository.findById(id);
+        if (employee == null) {
+            throw new EmployeeNotFoundException();
+        }
         return employeeDtoFactory.createEmployeeDto(employee);
     }
 
@@ -64,8 +67,9 @@ public class EmployeeService {
     }
 
     public void deleteEmployee(Long id) {
-        if (employeeRepository.exists(id)) {
-            employeeRepository.delete(id);
-        } else throw new EmployeeNotFoundException();
+        if (!employeeRepository.exists(id)) {
+            throw new EmployeeNotFoundException();
+        }
+        employeeRepository.delete(id);
     }
 }
