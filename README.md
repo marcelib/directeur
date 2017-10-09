@@ -16,7 +16,7 @@ and browse through all the methods- it's all described there.
 
 # Database configuration
 I've performed the configuration on a clean postgres, so you might find that useful. 
-To be able to use the database as default postgres user (otherwise you can change it in application.properties), do this:
+To be able to use the database as my custom-created user and a custom-created database (if you want to do it your own way you can change the database config in application.properties), do this:
 
 1. Login as postgres superuser
 ``` 
@@ -60,4 +60,13 @@ local all all md5
 ```
 /etc/init.d/postgresql restart
 ```
-Then you're good to go- the database is up and running :D
+8. Log in to postgres:
+```
+psql -U postgres
+```
+9. Execute the commands
+```
+create role directeur login password 'directeur';
+create database "directeur-dev" owner "directeur" encoding 'UTF8' lc_collate 'pl_PL.UTF8' lc_ctype 'pl_PL.UTF8' template template0;
+```
+Then you're good to go- the database is up and running - now you can deploy the app, and the schema will be taken care of :D

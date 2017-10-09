@@ -15,7 +15,7 @@ public class Employee {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="positionId")
+    @JoinColumn(name="position_id")
     public Position position;
 
     public String name;

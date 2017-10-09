@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="01" author="marcelib">
+        <createTable tableName="employeePosition"
+                     remarks="A table to contain all employee positions">
+            <column name="id" type="int">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="positionName" type="varchar(255)">
+                <constraints nullable="false" unique="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="employee"
+                     remarks="A table to contain all employees">
+            <column name="id" type="int">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="surname" type="varchar(255)">
+                <constraints nullable="true" unique="false"/>
+            </column>
+            <column name="email" type="varchar(255)">
+                <constraints nullable="true" unique="false"/>
+            </column>
+            <column name="position_id" type="int">
+                <constraints nullable="true" unique="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="employee" baseColumnNames="position_id"
+                                 constraintName="employee_fk"
+                                 referencedTableName="employee" referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>
