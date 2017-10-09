@@ -2,8 +2,17 @@
 Company employees manager app developed specially for Braintri recrutation purposes
 
 # Startup
-To run the application, all you need to to is to write
-mvn clean package && java -jar target/directeur-0.0.1-SNAPSHOT.jar
+To run the application, all you need to to is to execute this command:
+```
+mvn clean package && mvn spring-boot:run
+```
+
+# Getting to know the API
+If you want to take a quick look at how the API works, after running the app go into
+```
+http://localhost:8080/swagger-ui.html#/employees-endpoint
+```
+and browse through all the methods- it's all described there.
 
 # Database configuration
 I've performed the configuration on a clean postgres, so you might find that useful. 

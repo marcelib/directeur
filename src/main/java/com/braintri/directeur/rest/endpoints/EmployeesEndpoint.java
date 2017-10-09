@@ -1,17 +1,20 @@
 package com.braintri.directeur.rest.endpoints;
 
-
-import com.braintri.directeur.rest.command.CreateEmployeeCommand;
-import com.braintri.directeur.rest.model.EmployeeDto;
+import com.braintri.directeur.rest.dtos.CreateEmployeeRequestDto;
+import com.braintri.directeur.rest.dtos.EmployeeDto;
+import com.braintri.directeur.rest.dtos.EmployeesDto;
+import com.braintri.directeur.rest.dtos.SuccessResponse;
 import com.braintri.directeur.services.EmployeeService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/employees")
+@RequestMapping(value = "/employees", produces = "application/json")
+@Api(value = "/employees", description = "Operations for employees")
 public class EmployeesEndpoint {
-
 
     private EmployeeService employeeService;
 
@@ -20,22 +23,39 @@ public class EmployeesEndpoint {
     }
 
     @GetMapping
-    List<EmployeeDto> showAll() {
+    @ApiOperation(value = "Get employees", response = EmployeesDto.class)
+    @ApiResponse(code = 200, message = "Employees fetched successfully")
+    public EmployeesDto showAll() {
         return employeeService.getEmployees();
     }
 
+    @PutMapping
+    @ApiOperation(value = "Create employee", response = String.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Employee created successfully"),
+            @ApiResponse(code = 400, message = "Invalid employee data")})
+    public SuccessResponse create(@RequestBody CreateEmployeeRequestDto requestDto) {
+        employeeService.createEmployee(requestDto);
+        return new SuccessResponse("Data saved");
+    }
+
     @GetMapping("/{employeeId}/")
-    EmployeeDto findOne(@PathVariable Long employeeId) {
+    @ApiOperation(value = "Get employee by Id", response = EmployeeDto.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Employee fetched successfully"),
+            @ApiResponse(code = 400, message = "Invalid id format"),
+            @ApiResponse(code = 404, message = "Employee with requested id not found")})
+    public EmployeeDto findOne(@PathVariable Long employeeId) {
         return employeeService.getEmployee(employeeId);
     }
 
-    @PutMapping
-    void create(@RequestBody CreateEmployeeCommand command) {
-        employeeService.createEmployee(command);
-    }
-
     @DeleteMapping("/{employeeId}/")
-    void deleteOne(@PathVariable Long employeeId) {
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Employee deleted successfully"),
+            @ApiResponse(code = 400, message = "Invalid id format"),
+            @ApiResponse(code = 404, message = "Employee with requested id not found")})
+    public SuccessResponse deleteOne(@PathVariable Long employeeId) {
         employeeService.deleteEmployee(employeeId);
+        return new SuccessResponse("Employee deleted successfully");
     }
 }
