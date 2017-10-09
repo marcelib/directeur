@@ -14,6 +14,8 @@ http://localhost:8080/swagger-ui.html#/employees-endpoint
 ```
 and browse through all the methods- it's all described there.
 
+Notice: when sending a request that ends with an error, due to the swagger CORS issue, you may need to view the response in the browser dev tools.
+
 # Database configuration
 I've performed the configuration on a clean postgres, so you might find that useful. 
 To be able to use the database as my custom-created user and a custom-created database (if you want to do it your own way you can change the database config in application.properties), do this:
