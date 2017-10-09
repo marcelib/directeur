@@ -5,12 +5,14 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "employee")
 @Data
 public class Employee {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name="positionId")

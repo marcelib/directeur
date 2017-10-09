@@ -33,7 +33,8 @@ public class EmployeesEndpoint {
     @ApiOperation(value = "Create employee", response = String.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Employee created successfully"),
-            @ApiResponse(code = 400, message = "Invalid employee data")})
+            @ApiResponse(code = 400, message = "Invalid employee data"),
+            @ApiResponse(code = 404, message = "Position does not exist")})
     public SuccessResponse create(@RequestBody CreateEmployeeRequestDto requestDto) {
         employeeService.createEmployee(requestDto);
         return new SuccessResponse("Data saved");
