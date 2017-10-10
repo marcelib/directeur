@@ -67,6 +67,9 @@ psql -U postgres
 9. Execute the commands
 ```
 create role directeur login password 'directeur';
+create role "directeur-test" login password 'directeur-test';
+
 create database "directeur-dev" owner "directeur" encoding 'UTF8' lc_collate 'pl_PL.UTF8' lc_ctype 'pl_PL.UTF8' template template0;
+create database "directeur-test" owner "directeur-test" encoding 'UTF8' lc_collate 'pl_PL.UTF-8' lc_ctype 'pl_PL.UTF-8' template template0;
 ```
 Then you're good to go- the database is up and running - now you can deploy the app, and the schema will be taken care of :D
