@@ -39,6 +39,7 @@ public class EmployeeService {
     public EmployeeDto getEmployee(Long id) {
         Employee employee = employeeRepository.findById(id);
         if (employee == null) {
+            log.info("No employee found with id {0} - employee fetching failed");
             throw new EmployeeNotFoundException();
         }
         return employeeDtoFactory.createEmployeeDto(employee);
@@ -68,6 +69,7 @@ public class EmployeeService {
 
     public void deleteEmployee(Long id) {
         if (!employeeRepository.exists(id)) {
+            log.info("No employee found with id {0} - deleting operation failed");
             throw new EmployeeNotFoundException();
         }
         employeeRepository.delete(id);
