@@ -10,7 +10,7 @@ mvn clean package && mvn spring-boot:run
 # Getting to know the API
 If you want to take a quick look at how the API works, after running the app go into
 ```
-http://localhost:8080/swagger-ui.html#/employees-endpoint
+http://localhost:8080/swagger-ui.html
 ```
 and browse through all the methods- it's all described there.
 

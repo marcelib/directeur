@@ -30,7 +30,7 @@ public class EmployeesEndpoint {
     }
 
     @PutMapping
-    @ApiOperation(value = "Create employee", response = String.class)
+    @ApiOperation(value = "Create employee", response = SuccessResponse.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Employee created successfully"),
             @ApiResponse(code = 400, message = "Invalid employee data"),
@@ -51,6 +51,7 @@ public class EmployeesEndpoint {
     }
 
     @DeleteMapping("/{employeeId}/")
+    @ApiOperation(value = "Delete employee with specific id", response = SuccessResponse.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Employee deleted successfully"),
             @ApiResponse(code = 400, message = "Invalid id format"),

@@ -11,23 +11,30 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(value = "/positions", produces = "application/json")
 @Api(value = "/positions", description = "Operations for employee positions")
-public class PositionEndpoint {
+public class PositionsEndpoint {
 
     private PositionService positionService;
 
-    public PositionEndpoint(PositionService positionService) {
+    public PositionsEndpoint(PositionService positionService) {
         this.positionService = positionService;
     }
 
     @GetMapping
-    @ApiOperation(value = "Get positions", response = EmployeesDto.class)
+    @ApiOperation(value = "Get positions", response = PositionsDto.class)
     @ApiResponse(code = 200, message = "Positions fetched successfully")
     public PositionsDto showAll() {
         return positionService.getPositions();
     }
 
+    @GetMapping("/withEmployeeCount/")
+    @ApiOperation(value = "Get positions with employee count", response = PositionWithEmployeeCountDtoList.class)
+    @ApiResponse(code = 200, message = "Data fetched successfully")
+    public PositionWithEmployeeCountDtoList showAllWithEmployeeCount() {
+        return positionService.getPositionsWithEmployeeCount();
+    }
+
     @PutMapping
-    @ApiOperation(value = "Create position", response = String.class)
+    @ApiOperation(value = "Create position", response = SuccessResponse.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Position created successfully"),
             @ApiResponse(code = 400, message = "Invalid position data")})
@@ -37,7 +44,7 @@ public class PositionEndpoint {
     }
 
     @GetMapping("/{positionId}/")
-    @ApiOperation(value = "Get position by Id", response = EmployeeDto.class)
+    @ApiOperation(value = "Get position by Id", response = PositionDto.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Position fetched successfully"),
             @ApiResponse(code = 400, message = "Invalid id format"),
@@ -47,6 +54,7 @@ public class PositionEndpoint {
     }
 
     @DeleteMapping("/{positionId}/")
+    @ApiOperation(value = "Delete position with specific Id", response = SuccessResponse.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Position deleted successfully"),
             @ApiResponse(code = 400, message = "Invalid id format"),

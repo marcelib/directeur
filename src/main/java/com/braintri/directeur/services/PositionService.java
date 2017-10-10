@@ -4,6 +4,7 @@ import com.braintri.directeur.data.Position;
 import com.braintri.directeur.data.PositionRepository;
 import com.braintri.directeur.rest.dtos.CreatePositionRequestDto;
 import com.braintri.directeur.rest.dtos.PositionDto;
+import com.braintri.directeur.rest.dtos.PositionWithEmployeeCountDtoList;
 import com.braintri.directeur.rest.dtos.PositionsDto;
 import com.braintri.directeur.rest.dtos.factory.PositionDtoFactory;
 import com.braintri.directeur.rest.exception.PositionNotFoundException;
@@ -22,6 +23,11 @@ public class PositionService {
     public PositionService(PositionRepository positionRepository, PositionDtoFactory positionDtoFactory) {
         this.positionRepository = positionRepository;
         this.positionDtoFactory = positionDtoFactory;
+    }
+
+    public PositionWithEmployeeCountDtoList getPositionsWithEmployeeCount() {
+        List<Position> positionList = positionRepository.findAll();
+        return positionDtoFactory.createPositionWithEmployeeCountDtoList(positionList);
     }
 
     public PositionsDto getPositions() {
