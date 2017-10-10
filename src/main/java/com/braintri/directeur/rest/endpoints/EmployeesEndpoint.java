@@ -1,9 +1,6 @@
 package com.braintri.directeur.rest.endpoints;
 
-import com.braintri.directeur.rest.dtos.CreateEmployeeRequestDto;
-import com.braintri.directeur.rest.dtos.EmployeeDto;
-import com.braintri.directeur.rest.dtos.EmployeesDto;
-import com.braintri.directeur.rest.dtos.SuccessResponse;
+import com.braintri.directeur.rest.dtos.*;
 import com.braintri.directeur.services.EmployeeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,8 +22,11 @@ public class EmployeesEndpoint {
     @GetMapping
     @ApiOperation(value = "Get employees", response = EmployeesDto.class)
     @ApiResponse(code = 200, message = "Employees fetched successfully")
-    public EmployeesDto showAll() {
-        return employeeService.getEmployees();
+    public EmployeesDto showAll(@RequestParam(value = "name", required = false) String name,
+                                @RequestParam(value = "surname", required = false) String surname,
+                                @RequestParam(value = "email", required = false) String email) {
+        EmployeesFilteringDto filteringDto = new EmployeesFilteringDto(name, surname, email);
+        return employeeService.getEmployees(filteringDto);
     }
 
     @PutMapping

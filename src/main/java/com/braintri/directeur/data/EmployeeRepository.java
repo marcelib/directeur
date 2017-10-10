@@ -9,7 +9,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     List<Employee> findAll();
 
-    List<Employee> findAllByPosition(Position position);
-
     long countByPosition(Position position);
 }
