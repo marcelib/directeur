@@ -12,9 +12,7 @@ If you want to take a quick look at how the API works, after running the app go 
 ```
 http://localhost:8080/swagger-ui.html
 ```
-and browse through all the methods- it's all described there.
-
-Notice: when sending a request that ends with an error, due to the swagger CORS issue, you may need to view the response in the browser dev tools.
+to browse through and try out all the methods- it's all described there :)
 
 # Database configuration
 I've performed the configuration on a clean postgres, so you might find that useful. 
