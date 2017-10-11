@@ -6,6 +6,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,25 +22,38 @@ public class PositionsEndpoint {
 
     @GetMapping
     @ApiOperation(value = "Get positions", response = PositionsDto.class)
-    @ApiResponse(code = 200, message = "Positions fetched successfully")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Positions fetched successfully")})
     public PositionsDto showAll() {
         return positionService.getPositions();
     }
 
     @GetMapping("/withEmployeeCount/")
     @ApiOperation(value = "Get positions with employee count", response = PositionWithEmployeeCountDtoList.class)
-    @ApiResponse(code = 200, message = "Data fetched successfully")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Data fetched successfully")})
     public PositionWithEmployeeCountDtoList showAllWithEmployeeCount() {
         return positionService.getPositionsWithEmployeeCount();
     }
 
-    @PutMapping
+    @PostMapping
     @ApiOperation(value = "Create position", response = SuccessResponse.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Position created successfully"),
+            @ApiResponse(code = 201, message = "Position created successfully"),
             @ApiResponse(code = 400, message = "Invalid position data")})
+    @ResponseStatus(HttpStatus.CREATED)
     public SuccessResponse create(@RequestBody CreatePositionRequestDto requestDto) {
         positionService.createPosition(requestDto);
+        return new SuccessResponse("Data saved");
+    }
+
+    @PutMapping
+    @ApiOperation(value = "Update position", response = SuccessResponse.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Position updated successfully"),
+            @ApiResponse(code = 400, message = "Invalid position data")})
+    public SuccessResponse update(@RequestBody UpdatePositionRequestDto requestDto) {
+        positionService.updatePosition(requestDto);
         return new SuccessResponse("Data saved");
     }
 

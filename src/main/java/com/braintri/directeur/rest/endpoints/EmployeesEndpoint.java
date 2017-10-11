@@ -6,6 +6,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,7 +22,8 @@ public class EmployeesEndpoint {
 
     @GetMapping
     @ApiOperation(value = "Get employees", response = EmployeesDto.class)
-    @ApiResponse(code = 200, message = "Employees fetched successfully")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Employees fetched successfully")})
     public EmployeesDto showAll(@RequestParam(value = "name", required = false) String name,
                                 @RequestParam(value = "surname", required = false) String surname,
                                 @RequestParam(value = "email", required = false) String email) {
@@ -29,14 +31,27 @@ public class EmployeesEndpoint {
         return employeeService.getEmployees(filteringDto);
     }
 
-    @PutMapping
+    @PostMapping
     @ApiOperation(value = "Create employee", response = SuccessResponse.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Employee created successfully"),
+            @ApiResponse(code = 201, message = "Employee created successfully"),
             @ApiResponse(code = 400, message = "Invalid employee data"),
             @ApiResponse(code = 404, message = "Position does not exist")})
+    @ResponseStatus(HttpStatus.CREATED)
     public SuccessResponse create(@RequestBody CreateEmployeeRequestDto requestDto) {
         employeeService.createEmployee(requestDto);
+
+        return new SuccessResponse("Data saved");
+    }
+
+    @PutMapping
+    @ApiOperation(value = "Update employee", response = SuccessResponse.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Employee updated successfully"),
+            @ApiResponse(code = 400, message = "Invalid employee data"),
+            @ApiResponse(code = 404, message = "Position does not exist")})
+    public SuccessResponse update(@RequestBody UpdateEmployeeRequestDto requestDto) {
+        employeeService.updateEmployee(requestDto);
         return new SuccessResponse("Data saved");
     }
 

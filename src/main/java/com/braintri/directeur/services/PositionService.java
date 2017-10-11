@@ -2,15 +2,13 @@ package com.braintri.directeur.services;
 
 import com.braintri.directeur.data.Position;
 import com.braintri.directeur.data.PositionRepository;
-import com.braintri.directeur.rest.dtos.CreatePositionRequestDto;
-import com.braintri.directeur.rest.dtos.PositionDto;
-import com.braintri.directeur.rest.dtos.PositionWithEmployeeCountDtoList;
-import com.braintri.directeur.rest.dtos.PositionsDto;
+import com.braintri.directeur.rest.dtos.*;
 import com.braintri.directeur.rest.dtos.factory.PositionDtoFactory;
 import com.braintri.directeur.rest.exception.PositionNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Slf4j
@@ -36,14 +34,13 @@ public class PositionService {
     }
 
     public PositionDto getPosition(Long id) {
+        throwIfPositionNotFound(id);
+
         Position position = positionRepository.findById(id);
-        if (position == null) {
-            log.info("No position found with id {0} - position fetching failed");
-            throw new PositionNotFoundException();
-        }
         return positionDtoFactory.createPositionDto(position);
     }
 
+    @Transactional
     public void createPosition(CreatePositionRequestDto requestDto) {
         Position position = new Position();
         position.setPositionName(requestDto.getPositionName());
@@ -52,11 +49,26 @@ public class PositionService {
         positionRepository.save(position);
     }
 
+    @Transactional
+    public void updatePosition(UpdatePositionRequestDto positionDto) {
+        throwIfPositionNotFound(positionDto.getId());
+
+        Position position = positionRepository.findById(positionDto.getId());
+        position.setSalary(positionDto.getSalary());
+        position.setPositionName(positionDto.getPositionName());
+        positionRepository.save(position);
+    }
+
+    @Transactional
     public void deletePosition(Long id) {
-        if (!positionRepository.exists(id)) {
-            log.info("No position found with id {0} - deleting operation failed");
+        throwIfPositionNotFound(id);
+        positionRepository.delete(id);
+    }
+
+    private void throwIfPositionNotFound(Long positionId) {
+        if (!positionRepository.exists(positionId)) {
+            log.info("No position found with id {0}", positionId);
             throw new PositionNotFoundException();
         }
-        positionRepository.delete(id);
     }
 }

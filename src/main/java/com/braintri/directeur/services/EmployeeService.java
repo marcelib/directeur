@@ -4,10 +4,7 @@ import com.braintri.directeur.data.Employee;
 import com.braintri.directeur.data.EmployeeRepository;
 import com.braintri.directeur.data.Position;
 import com.braintri.directeur.data.PositionRepository;
-import com.braintri.directeur.rest.dtos.CreateEmployeeRequestDto;
-import com.braintri.directeur.rest.dtos.EmployeeDto;
-import com.braintri.directeur.rest.dtos.EmployeesDto;
-import com.braintri.directeur.rest.dtos.EmployeesFilteringDto;
+import com.braintri.directeur.rest.dtos.*;
 import com.braintri.directeur.rest.dtos.factory.EmployeeDtoFactory;
 import com.braintri.directeur.rest.exception.EmployeeNotFoundException;
 import com.braintri.directeur.rest.exception.PositionNotFoundException;
@@ -15,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,20 +38,35 @@ public class EmployeeService {
     }
 
     public EmployeeDto getEmployee(Long id) {
+        throwIfEmployeeNotFound(id);
+
         Employee employee = employeeRepository.findById(id);
-        if (employee == null) {
-            log.info("No employee found with id {0} - employee fetching failed");
-            throw new EmployeeNotFoundException();
-        }
         return employeeDtoFactory.createEmployeeDto(employee);
     }
 
-    public void createEmployee(CreateEmployeeRequestDto requestDto) {
+    @Transactional
+    public Employee createEmployee(CreateEmployeeRequestDto requestDto) {
         Employee employee = createEmployeeEntry(requestDto);
 
         employeeRepository.save(employee);
+        return employee;
     }
 
+    @Transactional
+    public void updateEmployee(UpdateEmployeeRequestDto requestDto) {
+        throwIfEmployeeNotFound(requestDto.getId());
+        throwIfPositionNotFound(requestDto.getPositionId());
+
+        Position position = positionRepository.findById(requestDto.getPositionId());
+        Employee employee = employeeRepository.findById(requestDto.getId());
+        employee.setName(requestDto.getName());
+        employee.setSurname(requestDto.getSurname());
+        employee.setEmail(requestDto.getEmail());
+        employee.setPosition(position);
+        employeeRepository.save(employee);
+    }
+
+    @Transactional
     public void deleteEmployee(Long id) {
         if (!employeeRepository.exists(id)) {
             log.info("No employee found with id {0} - deleting operation failed");
@@ -90,5 +103,19 @@ public class EmployeeService {
         employeeEntry.setPosition(employeePosition);
 
         return employeeEntry;
+    }
+
+    private void throwIfPositionNotFound(Long positionId) {
+        if (!positionRepository.exists(positionId)) {
+            log.info("No position found with id {0}", positionId);
+            throw new PositionNotFoundException();
+        }
+    }
+
+    private void throwIfEmployeeNotFound(Long id) {
+        if (!employeeRepository.exists(id)) {
+            log.info("No employee found with id {0}", id);
+            throw new EmployeeNotFoundException();
+        }
     }
 }
