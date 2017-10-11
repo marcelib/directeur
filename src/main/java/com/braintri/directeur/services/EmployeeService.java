@@ -45,11 +45,10 @@ public class EmployeeService {
     }
 
     @Transactional
-    public Employee createEmployee(CreateEmployeeRequestDto requestDto) {
+    public void createEmployee(CreateEmployeeRequestDto requestDto) {
         Employee employee = createEmployeeEntry(requestDto);
 
         employeeRepository.save(employee);
-        return employee;
     }
 
     @Transactional
