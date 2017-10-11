@@ -2,10 +2,7 @@ package com.braintri.directeur.rest.endpoints;
 
 import com.braintri.directeur.rest.dtos.*;
 import com.braintri.directeur.services.EmployeeService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,9 +21,9 @@ public class EmployeesEndpoint {
     @ApiOperation(value = "Get employees", response = EmployeesDto.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Employees fetched successfully")})
-    public EmployeesDto showAll(@RequestParam(value = "name", required = false) String name,
-                                @RequestParam(value = "surname", required = false) String surname,
-                                @RequestParam(value = "email", required = false) String email) {
+    public EmployeesDto showAll(@ApiParam(value = "optional filter by name") @RequestParam(value = "name", required = false) String name,
+                                @ApiParam(value = "optional filter by surname") @RequestParam(value = "surname", required = false) String surname,
+                                @ApiParam(value = "optional filter by email") @RequestParam(value = "email", required = false) String email) {
         EmployeesFilteringDto filteringDto = new EmployeesFilteringDto(name, surname, email);
         return employeeService.getEmployees(filteringDto);
     }
