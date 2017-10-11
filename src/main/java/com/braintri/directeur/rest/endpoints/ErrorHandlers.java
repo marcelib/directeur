@@ -1,5 +1,6 @@
 package com.braintri.directeur.rest.endpoints;
 
+import com.braintri.directeur.rest.dtos.EndpointResponse;
 import com.braintri.directeur.rest.exception.EmployeeNotFoundException;
 import com.braintri.directeur.rest.exception.PositionNotFoundException;
 import org.springframework.http.HttpHeaders;
@@ -14,22 +15,22 @@ public class ErrorHandlers {
     private static final String APPLICATION_JSON = "application/json";
 
     @ExceptionHandler(EmployeeNotFoundException.class)
-    public ResponseEntity<String> handleEmployeeNotFoundException(EmployeeNotFoundException ex) {
+    public ResponseEntity<EndpointResponse> handleEmployeeNotFoundException(EmployeeNotFoundException ex) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON);
         return new ResponseEntity<>(
-                "{\"error\": employee with requested id does not exist\"\"}",
+                new EndpointResponse("error", "employee with requested id does not exist"),
                 headers,
                 HttpStatus.NOT_FOUND
         );
     }
 
     @ExceptionHandler(PositionNotFoundException.class)
-    public ResponseEntity<String> handlePositionNotFoundException(PositionNotFoundException ex) {
+    public ResponseEntity<EndpointResponse> handlePositionNotFoundException(PositionNotFoundException ex) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON);
         return new ResponseEntity<>(
-                "{\"error\": position with requested id does not exist\"\"}",
+                new EndpointResponse("error", "position with requested id does not exist"),
                 headers,
                 HttpStatus.NOT_FOUND
         );

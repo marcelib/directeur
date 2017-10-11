@@ -12,8 +12,13 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.net.URI;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,8 +56,10 @@ public class EmployeesIT {
         Employee employee2 = objectFactory.createTestEmployeeWithPosition("other");
         Employee employee3 = objectFactory.createTestEmployeeWithPosition("another");
 
-        EmployeesDto employeesDto = testRestTemplate.getForObject("/employees", EmployeesDto.class);
+        ResponseEntity<EmployeesDto> responseEntity = testRestTemplate.exchange("/employees", HttpMethod.GET, null, EmployeesDto.class);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
 
+        EmployeesDto employeesDto = responseEntity.getBody();
         List<EmployeeDto> employees = employeesDto.getEmployees();
 
         assertThat(employees).hasSize(3);
@@ -68,7 +75,17 @@ public class EmployeesIT {
         objectFactory.createTestEmployeeWithPosition("other");
         objectFactory.createTestEmployeeWithPosition("another");
 
-        EmployeesDto employeesDto = testRestTemplate.getForObject("/employees?name={name}&surname={surname}&email={email}", EmployeesDto.class, EMPLOYEE_NAME, EMPLOYEE_SURNAME, EMPLOYEE_EMAIL);
+        ResponseEntity<EmployeesDto> responseEntity = testRestTemplate.exchange(
+                "/employees?name={name}&surname={surname}&email={email}",
+                HttpMethod.GET,
+                null,
+                EmployeesDto.class,
+                EMPLOYEE_NAME,
+                EMPLOYEE_SURNAME,
+                EMPLOYEE_EMAIL);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        EmployeesDto employeesDto = responseEntity.getBody();
 
         assertThat(employeesDto.getEmployees()).hasSize(1);
         assertThat(employeesDto.getEmployees().stream().allMatch(employeeDto -> isIdenticalAsEmployee(employeeDto, employee1)));
@@ -78,20 +95,33 @@ public class EmployeesIT {
     public void shouldGetSingleEmployee() {
         Employee employee = objectFactory.createTestEmployeeWithPosition("");
 
-        EmployeeDto employeeDto = testRestTemplate.getForObject("/employees/{id}/", EmployeeDto.class, employee.getId());
+        ResponseEntity<EmployeeDto> responseEntity = testRestTemplate.exchange(
+                "/employees/{id}/",
+                HttpMethod.GET,
+                null,
+                EmployeeDto.class,
+                employee.getId());
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        EmployeeDto employeeDto = responseEntity.getBody();
 
         assertThat(isIdenticalAsEmployee(employeeDto, employee));
     }
 
     @Test
-    public void shouldAddEmployee() {
+    public void shouldAddEmployee() throws Exception {
         Position position = objectFactory.createTestPosition();
 
         CreateEmployeeRequestDto requestDto = new CreateEmployeeRequestDto(EMPLOYEE_NAME, EMPLOYEE_SURNAME, EMPLOYEE_EMAIL, position.getId());
 
-        SuccessResponse response = testRestTemplate.postForObject("/employees", requestDto, SuccessResponse.class);
-        assertThat(response.getMessage()).isEqualTo("Data saved");
+        RequestEntity<CreateEmployeeRequestDto> requestEntity = new RequestEntity<>(requestDto, HttpMethod.POST, new URI("/employees"));
+
+        ResponseEntity<EndpointResponse> responseEntity = testRestTemplate.exchange(requestEntity, EndpointResponse.class);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        EndpointResponse response = responseEntity.getBody();
         assertThat(response.getStatus()).isEqualTo("OK");
+        assertThat(response.getMessage()).isEqualTo("Data saved");
 
         List<Employee> employees = employeeRepository.findAll();
 
@@ -103,17 +133,23 @@ public class EmployeesIT {
     }
 
     @Test
-    public void shouldUpdateEmployee() {
+    public void shouldUpdateEmployee() throws Exception {
         Employee employee = objectFactory.createTestEmployeeWithPosition();
         employee.setSurname("changed surname");
         employee.setEmail("changed email");
 
         UpdateEmployeeRequestDto requestDto = objectFactory.createEmployeeUpdateRequest(employee);
 
-        testRestTemplate.put("/employees", requestDto);
+        RequestEntity<UpdateEmployeeRequestDto> requestEntity = new RequestEntity<>(requestDto, HttpMethod.PUT, new URI("/employees"));
+
+        ResponseEntity<EndpointResponse> responseEntity = testRestTemplate.exchange(requestEntity, EndpointResponse.class);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        EndpointResponse endpointResponse = responseEntity.getBody();
+        assertThat(endpointResponse.getStatus()).isEqualTo("OK");
+        assertThat(endpointResponse.getMessage()).isEqualTo("Data saved");
 
         Employee changedEmployee = employeeRepository.findById(employee.getId());
-
         assertThat(employee).isEqualToComparingFieldByField(changedEmployee);
     }
 
@@ -121,10 +157,63 @@ public class EmployeesIT {
     public void shouldDeleteEmployee() {
         Employee employee = objectFactory.createTestEmployeeWithPosition();
 
-        testRestTemplate.delete("/employees/{id}/", employee.getId());
+        ResponseEntity<EndpointResponse> responseEntity = testRestTemplate.exchange("/employees/{id}/", HttpMethod.DELETE, null, EndpointResponse.class, employee.getId());
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        EndpointResponse endpointResponse = responseEntity.getBody();
+        assertThat(endpointResponse.getStatus()).isEqualTo("OK");
+        assertThat(endpointResponse.getMessage()).isEqualTo("Employee deleted successfully");
 
         assertThat(employeeRepository.exists(employee.getId())).isFalse();
+    }
 
+    @Test
+    public void shouldThrowOnAddingEmployeeWhenPositionNotFound() throws Exception {
+        Position position = objectFactory.createTestPosition();
+
+        CreateEmployeeRequestDto requestDto = new CreateEmployeeRequestDto(EMPLOYEE_NAME, EMPLOYEE_SURNAME, EMPLOYEE_EMAIL, position.getId() + 2);
+
+        RequestEntity<CreateEmployeeRequestDto> requestEntity = new RequestEntity<>(requestDto, HttpMethod.POST, new URI("/employees"));
+
+        ResponseEntity<EndpointResponse> responseEntity = testRestTemplate.exchange(requestEntity, EndpointResponse.class);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+
+        EndpointResponse endpointResponse = responseEntity.getBody();
+        assertThat(endpointResponse.getStatus()).isEqualTo("error");
+        assertThat(endpointResponse.getMessage()).isEqualTo("position with requested id does not exist");
+    }
+
+    @Test
+    public void shouldThrowOnUpdatingEmployeeWhenPositionNotFound() throws Exception {
+        Employee employee = objectFactory.createTestEmployeeWithPosition();
+
+        UpdateEmployeeRequestDto requestDto = new UpdateEmployeeRequestDto(employee.getId(), employee.getPosition().getId() + 1, "test", "test", "test");
+
+        RequestEntity<UpdateEmployeeRequestDto> requestEntity = new RequestEntity<>(requestDto, HttpMethod.PUT, new URI("/employees"));
+
+        ResponseEntity<EndpointResponse> responseEntity = testRestTemplate.exchange(requestEntity, EndpointResponse.class);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+
+        EndpointResponse endpointResponse = responseEntity.getBody();
+        assertThat(endpointResponse.getStatus()).isEqualTo("error");
+        assertThat(endpointResponse.getMessage()).isEqualTo("position with requested id does not exist");
+    }
+
+    @Test
+    public void shouldThrowOnDeletingEmployeeWhenNoEmployeeWithIdFound() throws Exception {
+        Employee employee = objectFactory.createTestEmployeeWithPosition();
+
+        ResponseEntity<EndpointResponse> responseEntity = testRestTemplate.exchange(
+                "/employees/{id}/",
+                HttpMethod.DELETE,
+                null,
+                EndpointResponse.class,
+                employee.getId() + 2);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+
+        EndpointResponse endpointResponse = responseEntity.getBody();
+        assertThat(endpointResponse.getStatus()).isEqualTo("error");
+        assertThat(endpointResponse.getMessage()).isEqualTo("employee with requested id does not exist");
     }
 
     private boolean isIdenticalAsEmployee(EmployeeDto employeeDto, Employee employee) {

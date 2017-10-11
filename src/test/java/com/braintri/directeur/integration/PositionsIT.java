@@ -12,8 +12,13 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.net.URI;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,9 +54,14 @@ public class PositionsIT {
         Position position2 = objectFactory.createTestPosition("other");
         Position position3 = objectFactory.createTestPosition("another");
 
-        PositionsDto positionsDto = testRestTemplate.getForObject("/positions", PositionsDto.class);
+        ResponseEntity<PositionsDto> responseEntity = testRestTemplate.exchange(
+                "/positions",
+                HttpMethod.GET,
+                null,
+                PositionsDto.class);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        List<PositionDto> positions = positionsDto.getPositions();
+        List<PositionDto> positions = responseEntity.getBody().getPositions();
 
         assertThat(positions).hasSize(3);
 
@@ -72,7 +82,14 @@ public class PositionsIT {
         employee3.setPosition(employee2.getPosition());
         employeeRepository.save(employee3);
 
-        PositionWithEmployeeCountDtoList dtoList = testRestTemplate.getForObject("/positions/withEmployeeCount/", PositionWithEmployeeCountDtoList.class);
+        ResponseEntity<PositionWithEmployeeCountDtoList> responseEntity = testRestTemplate.exchange(
+                "/positions/withEmployeeCount/",
+                HttpMethod.GET,
+                null,
+                PositionWithEmployeeCountDtoList.class);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        PositionWithEmployeeCountDtoList dtoList = responseEntity.getBody();
         List<PositionWithEmployeeCountDto> countDtoList = dtoList.getPositionsWithEmployeeCounts();
 
         assertThat(countDtoList).hasSize(3);
@@ -81,31 +98,33 @@ public class PositionsIT {
         assertThat(countDtoList.stream().anyMatch(dto -> containsPositionWithCount(dto, previousEmployee3Position, 0L))).isTrue();
     }
 
-    private boolean containsPositionWithCount(PositionWithEmployeeCountDto dto, Position position, Long count) {
-        PositionDto positionDto = dto.getPosition();
-
-        boolean countIsIdentical = count.equals(dto.getEmployeeCount());
-        boolean positionIsIdentical = position.getId().equals(positionDto.getId()) &&
-                position.getSalary().equals(positionDto.getSalary()) &&
-                position.getPositionName().equals(positionDto.getPositionName());
-
-        return countIsIdentical && positionIsIdentical;
-    }
-
     @Test
     public void shouldGetSinglePosition() {
         Position position = objectFactory.createTestPosition();
 
-        PositionDto positionDto = testRestTemplate.getForObject("/positions/{id}/", PositionDto.class, position.getId());
+        ResponseEntity<PositionDto> responseEntity = testRestTemplate.exchange(
+                "/positions/{id}/",
+                HttpMethod.GET,
+                null,
+                PositionDto.class,
+                position.getId());
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        PositionDto positionDto = responseEntity.getBody();
 
         assertThat(isIdenticalAsPosition(positionDto, position)).isTrue();
     }
 
     @Test
-    public void shouldAddPosition() {
+    public void shouldAddPosition() throws Exception {
         CreatePositionRequestDto requestDto = new CreatePositionRequestDto(POSITION_SALARY, POSITION_NAME);
 
-        SuccessResponse response = testRestTemplate.postForObject("/positions/", requestDto, SuccessResponse.class);
+        RequestEntity<CreatePositionRequestDto> requestEntity = new RequestEntity<>(requestDto, HttpMethod.POST, new URI("/positions/"));
+
+        ResponseEntity<EndpointResponse> responseEntity = testRestTemplate.exchange(requestEntity, EndpointResponse.class);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        EndpointResponse response = responseEntity.getBody();
         assertThat(response.getMessage()).isEqualTo("Data saved");
         assertThat(response.getStatus()).isEqualTo("OK");
 
@@ -117,29 +136,85 @@ public class PositionsIT {
     }
 
     @Test
-    public void shouldUpdateEmployee() {
+    public void shouldUpdatePosition() throws Exception {
         Position position = objectFactory.createTestPosition();
         position.setPositionName("new position name");
         position.setSalary(999999L);
 
         UpdatePositionRequestDto requestDto = objectFactory.createPositionUpdateRequest(position);
 
-        testRestTemplate.put("/positions", requestDto);
+        RequestEntity<UpdatePositionRequestDto> requestEntity = new RequestEntity<>(requestDto, HttpMethod.PUT, new URI("/positions"));
+
+        ResponseEntity<EndpointResponse> responseEntity = testRestTemplate.exchange(requestEntity, EndpointResponse.class);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        EndpointResponse endpointResponse = responseEntity.getBody();
+        assertThat(endpointResponse.getStatus()).isEqualTo("OK");
+        assertThat(endpointResponse.getMessage()).isEqualTo("Data saved");
 
         Position updatedPosition = positionRepository.findById(position.getId());
-
-        assertThat(updatedPosition.getId()).isEqualTo(position.getId());
-        assertThat(updatedPosition.getPositionName()).isEqualTo(position.getPositionName());
-        assertThat(updatedPosition.getSalary()).isEqualTo(position.getSalary());
+        assertThat(updatedPosition).isEqualToComparingFieldByField(position);
     }
 
     @Test
     public void shouldDeletePosition() {
         Position position = objectFactory.createTestPosition();
 
-        testRestTemplate.delete("/positions/{id}/", position.getId());
+        ResponseEntity<EndpointResponse> responseEntity = testRestTemplate.exchange("/positions/{id}/", HttpMethod.DELETE, null, EndpointResponse.class, position.getId());
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        assertThat(employeeRepository.exists(position.getId())).isFalse();
+        EndpointResponse endpointResponse = responseEntity.getBody();
+        assertThat(endpointResponse.getStatus()).isEqualTo("OK");
+        assertThat(endpointResponse.getMessage()).isEqualTo("Position deleted successfully");
+
+        assertThat(positionRepository.exists(position.getId())).isFalse();
+    }
+
+    @Test
+    public void shouldThrowOnUpdatingPositionWhenNoPositionWithIdFound() throws Exception {
+        Position position = objectFactory.createTestPosition();
+        position.setId(position.getId() + 1);
+        position.setPositionName("new position name");
+        position.setSalary(999999L);
+
+        UpdatePositionRequestDto requestDto = objectFactory.createPositionUpdateRequest(position);
+
+        RequestEntity<UpdatePositionRequestDto> requestEntity = new RequestEntity<>(requestDto, HttpMethod.PUT, new URI("/positions"));
+
+        ResponseEntity<EndpointResponse> responseEntity = testRestTemplate.exchange(requestEntity, EndpointResponse.class);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+
+        EndpointResponse endpointResponse = responseEntity.getBody();
+        assertThat(endpointResponse.getStatus()).isEqualTo("error");
+        assertThat(endpointResponse.getMessage()).isEqualTo("position with requested id does not exist");
+    }
+
+    @Test
+    public void shouldThrowOnDeletingPositionWhenNoPositionWithIdFound() throws Exception {
+        Position position = objectFactory.createTestPosition();
+
+        ResponseEntity<EndpointResponse> responseEntity = testRestTemplate.exchange(
+                "/positions/{id}/",
+                HttpMethod.DELETE,
+                null,
+                EndpointResponse.class,
+                position.getId() + 1);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+
+        EndpointResponse endpointResponse = responseEntity.getBody();
+        assertThat(endpointResponse.getStatus()).isEqualTo("error");
+        assertThat(endpointResponse.getMessage()).isEqualTo("position with requested id does not exist");
+    }
+
+    private boolean containsPositionWithCount(PositionWithEmployeeCountDto dto, Position position, Long count) {
+        PositionDto positionDto = dto.getPosition();
+
+        boolean countIsIdentical = count.equals(dto.getEmployeeCount());
+        boolean positionIsIdentical = position.getId().equals(positionDto.getId()) &&
+                position.getSalary().equals(positionDto.getSalary()) &&
+                position.getPositionName().equals(positionDto.getPositionName());
+
+        return countIsIdentical && positionIsIdentical;
     }
 
     private boolean isIdenticalAsPosition(PositionDto positionDto, Position position) {

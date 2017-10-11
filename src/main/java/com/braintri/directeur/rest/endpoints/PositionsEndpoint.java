@@ -37,24 +37,24 @@ public class PositionsEndpoint {
     }
 
     @PostMapping
-    @ApiOperation(value = "Create position", response = SuccessResponse.class)
+    @ApiOperation(value = "Create position", response = EndpointResponse.class)
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Position created successfully"),
             @ApiResponse(code = 400, message = "Invalid position data")})
     @ResponseStatus(HttpStatus.CREATED)
-    public SuccessResponse create(@RequestBody CreatePositionRequestDto requestDto) {
+    public EndpointResponse create(@RequestBody CreatePositionRequestDto requestDto) {
         positionService.createPosition(requestDto);
-        return new SuccessResponse("Data saved");
+        return new EndpointResponse("Data saved");
     }
 
     @PutMapping
-    @ApiOperation(value = "Update position", response = SuccessResponse.class)
+    @ApiOperation(value = "Update position", response = EndpointResponse.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Position updated successfully"),
             @ApiResponse(code = 400, message = "Invalid position data")})
-    public SuccessResponse update(@RequestBody UpdatePositionRequestDto requestDto) {
+    public EndpointResponse update(@RequestBody UpdatePositionRequestDto requestDto) {
         positionService.updatePosition(requestDto);
-        return new SuccessResponse("Data saved");
+        return new EndpointResponse("Data saved");
     }
 
     @GetMapping("/{positionId}/")
@@ -68,13 +68,13 @@ public class PositionsEndpoint {
     }
 
     @DeleteMapping("/{positionId}/")
-    @ApiOperation(value = "Delete position with specific Id", response = SuccessResponse.class)
+    @ApiOperation(value = "Delete position with specific Id", response = EndpointResponse.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Position deleted successfully"),
             @ApiResponse(code = 400, message = "Invalid id format"),
             @ApiResponse(code = 404, message = "Position with requested id not found")})
-    public SuccessResponse deleteOne(@PathVariable Long positionId) {
+    public EndpointResponse deleteOne(@PathVariable Long positionId) {
         positionService.deletePosition(positionId);
-        return new SuccessResponse("Position deleted successfully");
+        return new EndpointResponse("Position deleted successfully");
     }
 }

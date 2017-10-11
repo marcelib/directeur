@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel("success")
-public class SuccessResponse {
+public class EndpointResponse {
 
     @ApiModelProperty("status")
     private String status = "OK";
@@ -16,7 +16,7 @@ public class SuccessResponse {
     @ApiModelProperty("message")
     private String message;
 
-    public SuccessResponse(String message) {
+    public EndpointResponse(String message) {
         this.message = message;
     }
 }

@@ -67,10 +67,7 @@ public class EmployeeService {
 
     @Transactional
     public void deleteEmployee(Long id) {
-        if (!employeeRepository.exists(id)) {
-            log.info("No employee found with id {0} - deleting operation failed");
-            throw new EmployeeNotFoundException();
-        }
+        throwIfEmployeeNotFound(id);
         employeeRepository.delete(id);
     }
 
@@ -89,12 +86,10 @@ public class EmployeeService {
     }
 
     private Employee createEmployeeEntry(CreateEmployeeRequestDto requestDto) {
+        throwIfPositionNotFound(requestDto.getPositionId());
+
         Position employeePosition = positionRepository.findById(requestDto.getPositionId());
 
-        if (employeePosition == null) {
-            log.info("No position found for id {0} - employee won't be saved");
-            throw new PositionNotFoundException();
-        }
         Employee employeeEntry = new Employee();
         employeeEntry.setEmail(requestDto.getEmail());
         employeeEntry.setName(requestDto.getName());
@@ -106,14 +101,14 @@ public class EmployeeService {
 
     private void throwIfPositionNotFound(Long positionId) {
         if (!positionRepository.exists(positionId)) {
-            log.info("No position found with id {0}", positionId);
+            log.info("No position found with id {}", positionId);
             throw new PositionNotFoundException();
         }
     }
 
     private void throwIfEmployeeNotFound(Long id) {
         if (!employeeRepository.exists(id)) {
-            log.info("No employee found with id {0}", id);
+            log.info("No employee found with id {}", id);
             throw new EmployeeNotFoundException();
         }
     }

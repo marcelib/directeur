@@ -32,27 +32,27 @@ public class EmployeesEndpoint {
     }
 
     @PostMapping
-    @ApiOperation(value = "Create employee", response = SuccessResponse.class)
+    @ApiOperation(value = "Create employee", response = EndpointResponse.class)
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Employee created successfully"),
             @ApiResponse(code = 400, message = "Invalid employee data"),
             @ApiResponse(code = 404, message = "Position does not exist")})
     @ResponseStatus(HttpStatus.CREATED)
-    public SuccessResponse create(@RequestBody CreateEmployeeRequestDto requestDto) {
+    public EndpointResponse create(@RequestBody CreateEmployeeRequestDto requestDto) {
         employeeService.createEmployee(requestDto);
 
-        return new SuccessResponse("Data saved");
+        return new EndpointResponse("Data saved");
     }
 
     @PutMapping
-    @ApiOperation(value = "Update employee", response = SuccessResponse.class)
+    @ApiOperation(value = "Update employee", response = EndpointResponse.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Employee updated successfully"),
             @ApiResponse(code = 400, message = "Invalid employee data"),
             @ApiResponse(code = 404, message = "Position does not exist")})
-    public SuccessResponse update(@RequestBody UpdateEmployeeRequestDto requestDto) {
+    public EndpointResponse update(@RequestBody UpdateEmployeeRequestDto requestDto) {
         employeeService.updateEmployee(requestDto);
-        return new SuccessResponse("Data saved");
+        return new EndpointResponse("Data saved");
     }
 
     @GetMapping("/{employeeId}/")
@@ -66,13 +66,13 @@ public class EmployeesEndpoint {
     }
 
     @DeleteMapping("/{employeeId}/")
-    @ApiOperation(value = "Delete employee with specific id", response = SuccessResponse.class)
+    @ApiOperation(value = "Delete employee with specific id", response = EndpointResponse.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Employee deleted successfully"),
             @ApiResponse(code = 400, message = "Invalid id format"),
             @ApiResponse(code = 404, message = "Employee with requested id not found")})
-    public SuccessResponse deleteOne(@PathVariable Long employeeId) {
+    public EndpointResponse deleteOne(@PathVariable Long employeeId) {
         employeeService.deleteEmployee(employeeId);
-        return new SuccessResponse("Employee deleted successfully");
+        return new EndpointResponse("Employee deleted successfully");
     }
 }

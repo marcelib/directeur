@@ -67,7 +67,7 @@ public class PositionService {
 
     private void throwIfPositionNotFound(Long positionId) {
         if (!positionRepository.exists(positionId)) {
-            log.info("No position found with id {0}", positionId);
+            log.info("No position found with id {}", positionId);
             throw new PositionNotFoundException();
         }
     }
