@@ -50,8 +50,8 @@ class TestObjectFactory {
 
     Position createTestPosition(String suffix) {
         Position position = new Position();
-        position.setPositionName(POSITION_NAME + suffix);
-        position.setSalary(POSITION_SALARY);
+        position.setPosition_name(POSITION_NAME + suffix);
+        position.setMin_salary(POSITION_SALARY);
         positionRepository.save(position);
         return position;
     }
@@ -59,8 +59,8 @@ class TestObjectFactory {
     UpdatePositionRequestDto createPositionUpdateRequest(Position position) {
         return new UpdatePositionRequestDto(
                 position.getId(),
-                position.getSalary(),
-                position.getPositionName());
+                position.getMin_salary(),
+                position.getPosition_name());
     }
 
     UpdateEmployeeRequestDto createEmployeeUpdateRequest(Employee employee) {

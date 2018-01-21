@@ -43,8 +43,8 @@ public class PositionService {
     @Transactional
     public void createPosition(CreatePositionRequestDto requestDto) {
         Position position = new Position();
-        position.setPositionName(requestDto.getPositionName());
-        position.setSalary(requestDto.getSalary());
+        position.setPosition_name(requestDto.getPositionName());
+        position.setMin_salary(requestDto.getSalary());
 
         positionRepository.save(position);
     }
@@ -54,8 +54,8 @@ public class PositionService {
         throwIfPositionNotFound(positionDto.getId());
 
         Position position = positionRepository.findById(positionDto.getId());
-        position.setSalary(positionDto.getSalary());
-        position.setPositionName(positionDto.getPositionName());
+        position.setMin_salary(positionDto.getSalary());
+        position.setPosition_name(positionDto.getPositionName());
         positionRepository.save(position);
     }
 

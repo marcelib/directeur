@@ -17,7 +17,6 @@ public class Employee {
     @ManyToOne
     @JoinColumn(name="position_id")
     public Position position;
-
     public String name;
     public String surname;
     public String email;
