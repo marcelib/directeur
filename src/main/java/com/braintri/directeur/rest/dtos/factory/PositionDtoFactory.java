@@ -42,6 +42,6 @@ public class PositionDtoFactory {
     }
 
     public PositionDto createPositionDto(Position position) {
-        return new PositionDto(position.getId(), position.getMin_salary(), position.getPosition_name());
+        return new PositionDto(position.getId(), position.getMinSalary(), position.getPositionName());
     }
 }

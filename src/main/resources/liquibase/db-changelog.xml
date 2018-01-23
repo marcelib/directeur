@@ -6,11 +6,10 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
 
-    <include file="liquibase/01_create_table_department.sql"></include>
-    <include file="liquibase/02_create_table_role.sql"></include>
-    <include file="liquibase/03_create_table_employee_position.sql"></include>
-    <include file="liquibase/04_create_table_employee.sql"></include>
-    <include file="liquibase/05_create_table_department_director.sql"></include>
-    <include file="liquibase/13_example_test.sql"></include>
-
+    <include file="liquibase/01_create_table_department.sql"/>
+    <include file="liquibase/02_create_table_role.sql"/>
+    <include file="liquibase/03_create_table_employee_position.sql"/>
+    <include file="liquibase/04_create_table_employee.sql"/>
+    <include file="liquibase/05_create_table_department_director.sql"/>
+    <include file="liquibase/06_example_test.sql"/>
 </databaseChangeLog>

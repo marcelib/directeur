@@ -13,8 +13,14 @@ public class Position {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long min_salary;
-    private Long department_id;
-    private Long role_id;
-    private String position_name;
+    private Long minSalary;
+    private String positionName;
+
+    @ManyToOne
+    @JoinColumn(name="department_id")
+    private Department department;
+
+    @ManyToOne
+    @JoinColumn(name="role_id")
+    private Role role;
 }

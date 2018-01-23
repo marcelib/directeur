@@ -1,10 +1,14 @@
 package com.braintri.directeur.integration;
 
 import com.braintri.directeur.DirecteurApplication;
+import com.braintri.directeur.data.Department;
+import com.braintri.directeur.data.DepartmentRepository;
 import com.braintri.directeur.data.Employee;
 import com.braintri.directeur.data.EmployeeRepository;
 import com.braintri.directeur.data.Position;
 import com.braintri.directeur.data.PositionRepository;
+import com.braintri.directeur.data.Role;
+import com.braintri.directeur.data.RoleRepository;
 import com.braintri.directeur.rest.dtos.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,15 +43,23 @@ public class PositionsIT {
     private PositionRepository positionRepository;
 
     @Autowired
+    private DepartmentRepository departmentRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
     private TestRestTemplate testRestTemplate;
 
     private TestObjectFactory objectFactory;
 
     @Before
     public void setUp() {
-        objectFactory = new TestObjectFactory(employeeRepository, positionRepository);
+        objectFactory = new TestObjectFactory(employeeRepository, positionRepository, departmentRepository, roleRepository);
         employeeRepository.deleteAll();
         positionRepository.deleteAll();
+        departmentRepository.deleteAll();
+        roleRepository.deleteAll();
     }
 
     @Test
@@ -119,7 +131,9 @@ public class PositionsIT {
 
     @Test
     public void shouldAddPosition() throws Exception {
-        CreatePositionRequestDto requestDto = new CreatePositionRequestDto(POSITION_SALARY, POSITION_NAME);
+        Department department = objectFactory.createTestDepartment();
+        Role role = objectFactory.createTestRole();
+        CreatePositionRequestDto requestDto = new CreatePositionRequestDto(POSITION_SALARY, POSITION_NAME, role.getId(), department.getId());
 
         RequestEntity<CreatePositionRequestDto> requestEntity = new RequestEntity<>(requestDto, HttpMethod.POST, new URI("/positions/"));
 
@@ -133,15 +147,21 @@ public class PositionsIT {
         List<Position> positions = positionRepository.findAll();
 
         assertThat(positions).hasSize(1);
-        assertThat(positions.get(0).getPosition_name()).isEqualTo(POSITION_NAME);
-        assertThat(positions.get(0).getMin_salary()).isEqualTo(POSITION_SALARY);
+        assertThat(positions.get(0).getPositionName()).isEqualTo(POSITION_NAME);
+        assertThat(positions.get(0).getMinSalary()).isEqualTo(POSITION_SALARY);
     }
 
     @Test
     public void shouldUpdatePosition() throws Exception {
         Position position = objectFactory.createTestPosition();
-        position.setPosition_name("new position name");
-        position.setMin_salary(999999L);
+        Department department = objectFactory.createTestDepartment();
+        Role role = objectFactory.createTestRole();
+
+        position.setPositionName("new position name");
+        position.setMinSalary(999999L);
+        position.setRole(role);
+        position.setDepartment(department);
+
 
         UpdatePositionRequestDto requestDto = objectFactory.createPositionUpdateRequest(position);
 
@@ -173,11 +193,31 @@ public class PositionsIT {
     }
 
     @Test
+    public void shouldThrowOnUpdatingPositionWhenNoRoleWithIdFound() throws Exception {
+        Position position = objectFactory.createTestPosition();
+        position.setId(position.getId() + 1);
+        position.setPositionName("new position name");
+        position.setMinSalary(999999L);
+
+        UpdatePositionRequestDto requestDto = objectFactory.createPositionUpdateRequest(position);
+        requestDto.setRoleId(requestDto.getRoleId() + 1);
+
+        RequestEntity<UpdatePositionRequestDto> requestEntity = new RequestEntity<>(requestDto, HttpMethod.PUT, new URI("/positions"));
+
+        ResponseEntity<EndpointResponse> responseEntity = testRestTemplate.exchange(requestEntity, EndpointResponse.class);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+
+        EndpointResponse endpointResponse = responseEntity.getBody();
+        assertThat(endpointResponse.getStatus()).isEqualTo("error");
+        assertThat(endpointResponse.getMessage()).isEqualTo("role with requested id does not exist");
+    }
+
+    @Test
     public void shouldThrowOnUpdatingPositionWhenNoPositionWithIdFound() throws Exception {
         Position position = objectFactory.createTestPosition();
         position.setId(position.getId() + 1);
-        position.setPosition_name("new position name");
-        position.setMin_salary(999999L);
+        position.setPositionName("new position name");
+        position.setMinSalary(999999L);
 
         UpdatePositionRequestDto requestDto = objectFactory.createPositionUpdateRequest(position);
 
@@ -213,15 +253,15 @@ public class PositionsIT {
 
         boolean countIsIdentical = count.equals(dto.getEmployeeCount());
         boolean positionIsIdentical = position.getId().equals(positionDto.getId()) &&
-                position.getMin_salary().equals(positionDto.getSalary()) &&
-                position.getPosition_name().equals(positionDto.getPositionName());
+                position.getMinSalary().equals(positionDto.getSalary()) &&
+                position.getPositionName().equals(positionDto.getPositionName());
 
         return countIsIdentical && positionIsIdentical;
     }
 
     private boolean isIdenticalAsPosition(PositionDto positionDto, Position position) {
         return positionDto.getId().equals(position.getId()) &&
-                positionDto.getPositionName().equals(position.getPosition_name()) &&
-                positionDto.getSalary().equals(position.getMin_salary());
+                positionDto.getPositionName().equals(position.getPositionName()) &&
+                positionDto.getSalary().equals(position.getMinSalary());
     }
 }

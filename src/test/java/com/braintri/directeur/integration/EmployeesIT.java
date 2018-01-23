@@ -1,10 +1,12 @@
 package com.braintri.directeur.integration;
 
 import com.braintri.directeur.DirecteurApplication;
+import com.braintri.directeur.data.DepartmentRepository;
 import com.braintri.directeur.data.Employee;
 import com.braintri.directeur.data.EmployeeRepository;
 import com.braintri.directeur.data.Position;
 import com.braintri.directeur.data.PositionRepository;
+import com.braintri.directeur.data.RoleRepository;
 import com.braintri.directeur.rest.dtos.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,15 +43,22 @@ public class EmployeesIT {
     private PositionRepository positionRepository;
 
     @Autowired
+    private DepartmentRepository departmentRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
     private TestRestTemplate testRestTemplate;
 
     private TestObjectFactory objectFactory;
 
     @Before
     public void setUp() {
-        objectFactory = new TestObjectFactory(employeeRepository, positionRepository);
+        objectFactory = new TestObjectFactory(employeeRepository, positionRepository, departmentRepository, roleRepository);
         employeeRepository.deleteAll();
         positionRepository.deleteAll();
+        departmentRepository.deleteAll();
+        roleRepository.deleteAll();
     }
 
     @Test

@@ -1,6 +1,9 @@
 package com.braintri.directeur.rest.dtos;
 
+import java.util.List;
+
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,11 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UpdatePositionRequestDto {
+public class DepartmentsDto {
 
-    private Long id;
-    private Long salary;
-    private String positionName;
-    private Long roleId;
-    private Long departmentId;
+    @ApiModelProperty
+    private List<DepartmentDto> departments;
 }
