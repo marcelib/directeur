@@ -29,7 +29,7 @@ public class SwaggerConfig {
                 "API description for Directeur Application",
                 "1.0",
                 "Terms of service",
-                new Contact("Marceli Baczewski", "https://pl.linkedin.com/in/marcelibaczewski", "marceli.baczewski@gmail.com"),
+                new Contact("Marceli Baczewski, Witalis Kinasz, Wojciech Sankowski, Filip Biernacki, Adrian Szewczyk", "https://pl.linkedin.com/in/marcelibaczewski", "marceli.baczewski@gmail.com"),
                 "MIT License",
                 "https://opensource.org/licenses/MIT");
         return apiInfo;

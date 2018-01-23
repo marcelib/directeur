@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping(value = "/roles", produces = "application/json")
-@Api(value = "/roles", description = "Operations for role roles")
+@Api(value = "/roles", description = "Operations for roles")
 public class RolesEndpoint {
 
     private RoleService roleService;
