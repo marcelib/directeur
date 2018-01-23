@@ -1,5 +1,6 @@
 package com.wut.directeur.rest.endpoints;
 
+import com.sun.tools.javac.util.StringUtils;
 import com.wut.directeur.rest.dtos.employee.CreateEmployeeRequestDto;
 import com.wut.directeur.rest.dtos.employee.EmployeeDto;
 import com.wut.directeur.rest.dtos.employee.EmployeesDto;
@@ -7,7 +8,9 @@ import com.wut.directeur.rest.dtos.employee.EmployeesFilteringDto;
 import com.wut.directeur.rest.dtos.employee.UpdateEmployeeRequestDto;
 import com.wut.directeur.rest.dtos.response.EndpointResponse;
 import com.wut.directeur.services.EmployeeService;
+
 import io.swagger.annotations.*;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +32,10 @@ public class EmployeesEndpoint {
     public EmployeesDto showAll(@ApiParam(value = "optional filter by name") @RequestParam(value = "name", required = false) String name,
                                 @ApiParam(value = "optional filter by surname") @RequestParam(value = "surname", required = false) String surname,
                                 @ApiParam(value = "optional filter by email") @RequestParam(value = "email", required = false) String email) {
-        EmployeesFilteringDto filteringDto = new EmployeesFilteringDto(name, surname, email);
+        EmployeesFilteringDto filteringDto = new EmployeesFilteringDto(
+                name == null ? "" : name,
+                surname == null ? "" : surname,
+                email == null ? "" : email);
         return employeeService.getEmployees(filteringDto);
     }
 

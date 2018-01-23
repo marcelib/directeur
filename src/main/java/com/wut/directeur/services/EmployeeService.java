@@ -1,8 +1,8 @@
 package com.wut.directeur.services;
 
 import com.wut.directeur.data.model.Employee;
-import com.wut.directeur.data.repository.EmployeeRepository;
 import com.wut.directeur.data.model.Position;
+import com.wut.directeur.data.repository.EmployeeRepository;
 import com.wut.directeur.data.repository.PositionRepository;
 import com.wut.directeur.rest.dtos.employee.CreateEmployeeRequestDto;
 import com.wut.directeur.rest.dtos.employee.EmployeeDto;
@@ -12,13 +12,14 @@ import com.wut.directeur.rest.dtos.employee.UpdateEmployeeRequestDto;
 import com.wut.directeur.rest.dtos.factory.EmployeeDtoFactory;
 import com.wut.directeur.rest.exception.EmployeeNotFoundException;
 import com.wut.directeur.rest.exception.PositionNotFoundException;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -77,17 +78,11 @@ public class EmployeeService {
     }
 
     private List<Employee> applyFilteringCriteria(EmployeesFilteringDto filteringDto) {
-        List<Employee> employeeList = employeeRepository.findAll();
-        if (StringUtils.isNotEmpty(filteringDto.getEmail())) {
-            employeeList = employeeList.stream().filter(e -> filteringDto.getEmail().equals(e.getEmail())).collect(Collectors.toList());
-        }
-        if (StringUtils.isNotEmpty(filteringDto.getName())) {
-            employeeList = employeeList.stream().filter(e -> filteringDto.getName().equals(e.getName())).collect(Collectors.toList());
-        }
-        if (StringUtils.isNotEmpty(filteringDto.getSurname())) {
-            employeeList = employeeList.stream().filter(e -> filteringDto.getSurname().equals(e.getSurname())).collect(Collectors.toList());
-        }
-        return employeeList;
+        return employeeRepository.findAllByNameContainingAndSurnameContainingAndEmailContaining(
+                filteringDto.getName(),
+                filteringDto.getSurname(),
+                filteringDto.getEmail()
+        );
     }
 
     private Employee createEmployeeEntry(CreateEmployeeRequestDto requestDto) {

@@ -87,24 +87,25 @@ public class EmployeesIT {
 
     @Test
     public void shouldFetchFilteredEmployees() {
-        Employee employee1 = objectFactory.createTestEmployeeWithPosition();
-        objectFactory.createTestEmployeeWithPosition("other");
-        objectFactory.createTestEmployeeWithPosition("another");
+
+        objectFactory.createTestEmployeeWithPosition();
+        Employee employee2 = objectFactory.createTestEmployeeWithPosition("other");
+        objectFactory.createTestEmployeeWithPosition("different");
 
         ResponseEntity<EmployeesDto> responseEntity = testRestTemplate.exchange(
                 "/employees?name={name}&surname={surname}&email={email}",
                 HttpMethod.GET,
                 null,
                 EmployeesDto.class,
-                EMPLOYEE_NAME,
-                EMPLOYEE_SURNAME,
-                EMPLOYEE_EMAIL);
+                employee2.getName(),
+                employee2.getSurname(),
+                employee2.getEmail());
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         EmployeesDto employeesDto = responseEntity.getBody();
 
         assertThat(employeesDto.getEmployees()).hasSize(1);
-        assertThat(employeesDto.getEmployees().stream().allMatch(employeeDto -> isIdenticalAsEmployee(employeeDto, employee1)));
+        assertThat(employeesDto.getEmployees().stream().allMatch(employeeDto -> isIdenticalAsEmployee(employeeDto, employee2)));
     }
 
     @Test

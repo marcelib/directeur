@@ -12,5 +12,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     List<Employee> findAll();
 
+    List<Employee> findAllByNameContainingAndSurnameContainingAndEmailContaining(String name, String surname, String email);
+
     long countByPosition(Position position);
 }
