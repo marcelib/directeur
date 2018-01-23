@@ -1,5 +1,5 @@
 # directeur
-Company employees manager app developed specially for Braintri recrutation purposes
+Company employees manager app developed specially for our university 'team' project
 
 # Startup
 To run the application, all you need to to is to execute this command:
