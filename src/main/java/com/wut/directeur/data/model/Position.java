@@ -1,4 +1,4 @@
-package com.wut.directeur.data;
+package com.wut.directeur.data.model;
 
 import lombok.Data;
 

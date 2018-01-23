@@ -1,4 +1,4 @@
-package com.wut.directeur.rest.dtos;
+package com.wut.directeur.rest.dtos.position;
 
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
@@ -9,9 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class DepartmentDto {
+public class PositionWithEmployeeCountDto {
 
-    private Long id;
-
-    private String departmentName;
+    private PositionDto position;
+    private Long employeeCount;
 }

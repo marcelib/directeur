@@ -1,4 +1,4 @@
-package com.wut.directeur.rest.dtos;
+package com.wut.directeur.rest.dtos.department;
 
 import java.util.List;
 

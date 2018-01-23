@@ -1,15 +1,22 @@
 package com.wut.directeur.integration;
 
 import com.wut.directeur.DirecteurApplication;
-import com.wut.directeur.data.Department;
-import com.wut.directeur.data.DepartmentRepository;
-import com.wut.directeur.data.Employee;
-import com.wut.directeur.data.EmployeeRepository;
-import com.wut.directeur.data.Position;
-import com.wut.directeur.data.PositionRepository;
-import com.wut.directeur.data.Role;
-import com.wut.directeur.data.RoleRepository;
-import com.wut.directeur.rest.dtos.*;
+import com.wut.directeur.data.model.Department;
+import com.wut.directeur.data.repository.DepartmentRepository;
+import com.wut.directeur.data.model.Employee;
+import com.wut.directeur.data.repository.EmployeeRepository;
+import com.wut.directeur.data.model.Position;
+import com.wut.directeur.data.repository.PositionRepository;
+import com.wut.directeur.data.model.Role;
+import com.wut.directeur.data.repository.RoleRepository;
+import com.wut.directeur.rest.dtos.position.CreatePositionRequestDto;
+import com.wut.directeur.rest.dtos.position.PositionDto;
+import com.wut.directeur.rest.dtos.position.PositionWithEmployeeCountDto;
+import com.wut.directeur.rest.dtos.position.PositionWithEmployeeCountDtoList;
+import com.wut.directeur.rest.dtos.position.PositionsDto;
+import com.wut.directeur.rest.dtos.position.UpdatePositionRequestDto;
+import com.wut.directeur.rest.dtos.response.EndpointResponse;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

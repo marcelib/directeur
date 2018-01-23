@@ -1,8 +1,8 @@
 package com.wut.directeur.rest.dtos.factory;
 
-import com.wut.directeur.data.Department;
-import com.wut.directeur.rest.dtos.DepartmentDto;
-import com.wut.directeur.rest.dtos.DepartmentsDto;
+import com.wut.directeur.data.model.Department;
+import com.wut.directeur.rest.dtos.department.DepartmentDto;
+import com.wut.directeur.rest.dtos.department.DepartmentsDto;
 
 import org.springframework.stereotype.Component;
 
@@ -23,6 +23,6 @@ public class DepartmentDtoFactory {
     }
 
     public DepartmentDto createDepartmentDto(Department department) {
-        return new DepartmentDto(department.getId(), department.getDepartmentName());
+        return new DepartmentDto(department.getId(), department.getDepartmentName(), department.getDepartmentDescription());
     }
 }

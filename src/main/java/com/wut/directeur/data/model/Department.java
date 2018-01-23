@@ -1,4 +1,4 @@
-package com.wut.directeur.data;
+package com.wut.directeur.data.model;
 
 import lombok.Data;
 
@@ -15,4 +15,6 @@ public class Department {
     private Long id;
 
     private String departmentName;
+
+    private String departmentDescription;
 }

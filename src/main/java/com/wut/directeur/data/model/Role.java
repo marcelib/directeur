@@ -1,4 +1,4 @@
-package com.wut.directeur.data;
+package com.wut.directeur.data.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,6 +21,8 @@ public class Role {
     private Long id;
 
     private String name;
+
+    private String description;
 
     private boolean isAdmin;
     private boolean isAccountant;

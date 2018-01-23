@@ -1,4 +1,4 @@
-package com.wut.directeur.data;
+package com.wut.directeur.data.model;
 
 import lombok.Data;
 
@@ -20,4 +20,6 @@ public class Employee {
     public String name;
     public String surname;
     public String email;
+
+    public Integer salary;
 }

@@ -1,4 +1,4 @@
-package com.wut.directeur.rest.dtos;
+package com.wut.directeur.rest.dtos.employee;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,4 +13,5 @@ public class CreateEmployeeRequestDto {
     private String surname;
     private String email;
     private Long positionId;
+    private Integer salary;
 }

@@ -1,7 +1,6 @@
-package com.wut.directeur.rest.dtos;
+package com.wut.directeur.rest.dtos.position;
 
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,8 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class RolesDto {
+public class PositionWithEmployeeCountDtoList {
 
-    @ApiModelProperty
-    private List<RoleDto> roles;
+    private List<PositionWithEmployeeCountDto> positionsWithEmployeeCounts;
 }

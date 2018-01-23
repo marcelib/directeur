@@ -1,4 +1,4 @@
-package com.wut.directeur.rest.dtos;
+package com.wut.directeur.rest.dtos.role;
 
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
@@ -9,13 +9,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class RoleDto {
-
-    private Long id;
+public class CreateRoleRequestDto {
 
     private String name;
 
     private boolean isAdmin;
     private boolean isAccountant;
     private boolean isNormal;
+
+    private String description;
 }

@@ -1,8 +1,8 @@
 package com.wut.directeur.rest.dtos.factory;
 
-import com.wut.directeur.data.Role;
-import com.wut.directeur.rest.dtos.RoleDto;
-import com.wut.directeur.rest.dtos.RolesDto;
+import com.wut.directeur.data.model.Role;
+import com.wut.directeur.rest.dtos.role.RoleDto;
+import com.wut.directeur.rest.dtos.role.RolesDto;
 
 import org.springframework.stereotype.Component;
 
@@ -23,6 +23,6 @@ public class RoleDtoFactory {
     }
 
     public RoleDto createRoleDto(Role role) {
-        return new RoleDto(role.getId(), role.getName(), role.isAdmin(), role.isAccountant(), role.isNormal());
+        return new RoleDto(role.getId(), role.getName(), role.isAdmin(), role.isAccountant(), role.isNormal(), role.getDescription());
     }
 }

@@ -1,4 +1,4 @@
-package com.wut.directeur.rest.dtos;
+package com.wut.directeur.rest.dtos.employee;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

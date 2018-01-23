@@ -1,10 +1,14 @@
 package com.wut.directeur.services;
 
-import com.wut.directeur.data.Employee;
-import com.wut.directeur.data.EmployeeRepository;
-import com.wut.directeur.data.Position;
-import com.wut.directeur.data.PositionRepository;
-import com.wut.directeur.rest.dtos.*;
+import com.wut.directeur.data.model.Employee;
+import com.wut.directeur.data.repository.EmployeeRepository;
+import com.wut.directeur.data.model.Position;
+import com.wut.directeur.data.repository.PositionRepository;
+import com.wut.directeur.rest.dtos.employee.CreateEmployeeRequestDto;
+import com.wut.directeur.rest.dtos.employee.EmployeeDto;
+import com.wut.directeur.rest.dtos.employee.EmployeesDto;
+import com.wut.directeur.rest.dtos.employee.EmployeesFilteringDto;
+import com.wut.directeur.rest.dtos.employee.UpdateEmployeeRequestDto;
 import com.wut.directeur.rest.dtos.factory.EmployeeDtoFactory;
 import com.wut.directeur.rest.exception.EmployeeNotFoundException;
 import com.wut.directeur.rest.exception.PositionNotFoundException;
@@ -62,6 +66,7 @@ public class EmployeeService {
         employee.setSurname(requestDto.getSurname());
         employee.setEmail(requestDto.getEmail());
         employee.setPosition(position);
+        employee.setSalary(requestDto.getSalary());
         employeeRepository.save(employee);
     }
 
@@ -95,6 +100,7 @@ public class EmployeeService {
         employeeEntry.setName(requestDto.getName());
         employeeEntry.setSurname(requestDto.getSurname());
         employeeEntry.setPosition(employeePosition);
+        employeeEntry.setSalary(requestDto.getSalary());
 
         return employeeEntry;
     }

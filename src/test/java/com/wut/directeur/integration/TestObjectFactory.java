@@ -1,15 +1,15 @@
 package com.wut.directeur.integration;
 
-import com.wut.directeur.data.Department;
-import com.wut.directeur.data.DepartmentRepository;
-import com.wut.directeur.data.Employee;
-import com.wut.directeur.data.EmployeeRepository;
-import com.wut.directeur.data.Position;
-import com.wut.directeur.data.PositionRepository;
-import com.wut.directeur.data.Role;
-import com.wut.directeur.data.RoleRepository;
-import com.wut.directeur.rest.dtos.UpdateEmployeeRequestDto;
-import com.wut.directeur.rest.dtos.UpdatePositionRequestDto;
+import com.wut.directeur.data.model.Department;
+import com.wut.directeur.data.repository.DepartmentRepository;
+import com.wut.directeur.data.model.Employee;
+import com.wut.directeur.data.repository.EmployeeRepository;
+import com.wut.directeur.data.model.Position;
+import com.wut.directeur.data.repository.PositionRepository;
+import com.wut.directeur.data.model.Role;
+import com.wut.directeur.data.repository.RoleRepository;
+import com.wut.directeur.rest.dtos.employee.UpdateEmployeeRequestDto;
+import com.wut.directeur.rest.dtos.position.UpdatePositionRequestDto;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,6 +18,7 @@ class TestObjectFactory {
 
     private static final String POSITION_NAME = "Król";
     private static final Long POSITION_SALARY = 10000L;
+    private static final Integer EMPLOYEE_SALARY = 12000;
 
     private static final String EMPLOYEE_NAME = "Jan Trzeci";
     private static final String EMPLOYEE_SURNAME = "Sobieski";
@@ -49,6 +50,8 @@ class TestObjectFactory {
         employee.setName(EMPLOYEE_NAME + suffix);
         employee.setSurname(EMPLOYEE_SURNAME + suffix);
         employee.setEmail(EMPLOYEE_EMAIL + suffix);
+
+        employee.setSalary(EMPLOYEE_SALARY);
         employeeRepository.save(employee);
 
         return employee;
@@ -73,6 +76,7 @@ class TestObjectFactory {
     Department createTestDepartment() {
         Department department = new Department();
         department.setDepartmentName("Zakon feniksa");
+        department.setDepartmentDescription("Zakon służący do walki ze złem");
         departmentRepository.save(department);
         return department;
     }
@@ -80,6 +84,7 @@ class TestObjectFactory {
     Role createTestRole() {
         Role role = new Role();
         role.setName("Mistrz");
+        role.setDescription("Najważniejsza osoba w firmie.");
         role.setAccountant(true);
         role.setAdmin(true);
         role.setNormal(true);
@@ -102,6 +107,7 @@ class TestObjectFactory {
                 employee.getPosition().getId(),
                 employee.getName(),
                 employee.getSurname(),
-                employee.getEmail());
+                employee.getEmail(),
+                employee.getSalary());
     }
 }

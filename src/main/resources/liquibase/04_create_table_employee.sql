@@ -5,6 +5,6 @@ CREATE TABLE employee
   surname     VARCHAR(255),
   email       VARCHAR(255),
   position_id INTEGER REFERENCES employee_position,
-  salary      INTEGER
+  salary      INTEGER NOT NULL
 );
 COMMENT ON TABLE employee IS 'A table to contain all employees';

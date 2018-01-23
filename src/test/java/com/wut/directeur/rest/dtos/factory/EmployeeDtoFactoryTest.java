@@ -1,9 +1,9 @@
 package com.wut.directeur.rest.dtos.factory;
 
-import com.wut.directeur.data.Employee;
-import com.wut.directeur.data.Position;
-import com.wut.directeur.rest.dtos.EmployeeDto;
-import com.wut.directeur.rest.dtos.EmployeesDto;
+import com.wut.directeur.data.model.Employee;
+import com.wut.directeur.data.model.Position;
+import com.wut.directeur.rest.dtos.employee.EmployeeDto;
+import com.wut.directeur.rest.dtos.employee.EmployeesDto;
 import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Test;

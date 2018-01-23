@@ -1,6 +1,11 @@
 package com.wut.directeur.rest.endpoints;
 
-import com.wut.directeur.rest.dtos.*;
+import com.wut.directeur.rest.dtos.position.CreatePositionRequestDto;
+import com.wut.directeur.rest.dtos.position.PositionDto;
+import com.wut.directeur.rest.dtos.position.PositionWithEmployeeCountDtoList;
+import com.wut.directeur.rest.dtos.position.PositionsDto;
+import com.wut.directeur.rest.dtos.position.UpdatePositionRequestDto;
+import com.wut.directeur.rest.dtos.response.EndpointResponse;
 import com.wut.directeur.services.PositionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

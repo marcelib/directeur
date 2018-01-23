@@ -1,13 +1,17 @@
 package com.wut.directeur.services;
 
-import com.wut.directeur.data.Department;
-import com.wut.directeur.data.DepartmentRepository;
-import com.wut.directeur.data.Position;
-import com.wut.directeur.data.PositionRepository;
-import com.wut.directeur.data.Role;
-import com.wut.directeur.data.RoleRepository;
-import com.wut.directeur.rest.dtos.*;
+import com.wut.directeur.data.model.Department;
+import com.wut.directeur.data.repository.DepartmentRepository;
+import com.wut.directeur.data.model.Position;
+import com.wut.directeur.data.repository.PositionRepository;
+import com.wut.directeur.data.model.Role;
+import com.wut.directeur.data.repository.RoleRepository;
 import com.wut.directeur.rest.dtos.factory.PositionDtoFactory;
+import com.wut.directeur.rest.dtos.position.CreatePositionRequestDto;
+import com.wut.directeur.rest.dtos.position.PositionDto;
+import com.wut.directeur.rest.dtos.position.PositionWithEmployeeCountDtoList;
+import com.wut.directeur.rest.dtos.position.PositionsDto;
+import com.wut.directeur.rest.dtos.position.UpdatePositionRequestDto;
 import com.wut.directeur.rest.exception.DepartmentNotFoundException;
 import com.wut.directeur.rest.exception.PositionNotFoundException;
 import com.wut.directeur.rest.exception.RoleNotFoundException;
@@ -58,7 +62,7 @@ public class PositionService {
         Department department = departmentRepository.findById(requestDto.getDepartmentId());
         Role role = roleRepository.findById(requestDto.getRoleId());
 
-        throwIfRolenNotFound(role, requestDto.getRoleId());
+        throwIfRoleNotFound(role, requestDto.getRoleId());
         throwIfDepartmentNotFound(department,requestDto.getDepartmentId());
 
         Position position = new Position();
@@ -75,7 +79,7 @@ public class PositionService {
         Department department = departmentRepository.findById(requestDto.getDepartmentId());
         Role role = roleRepository.findById(requestDto.getRoleId());
 
-        throwIfRolenNotFound(role, requestDto.getRoleId());
+        throwIfRoleNotFound(role, requestDto.getRoleId());
         throwIfDepartmentNotFound(department,requestDto.getDepartmentId());
 
         throwIfPositionNotFound(requestDto.getId());
@@ -110,7 +114,7 @@ public class PositionService {
         }
     }
 
-    private void throwIfRolenNotFound(Role role, Long roleId) {
+    private void throwIfRoleNotFound(Role role, Long roleId) {
         if (role == null) {
             log.info("No role found with id {}", roleId);
             throw new RoleNotFoundException();

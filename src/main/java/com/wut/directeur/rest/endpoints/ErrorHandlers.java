@@ -1,6 +1,6 @@
 package com.wut.directeur.rest.endpoints;
 
-import com.wut.directeur.rest.dtos.EndpointResponse;
+import com.wut.directeur.rest.dtos.response.EndpointResponse;
 import com.wut.directeur.rest.exception.DepartmentNotFoundException;
 import com.wut.directeur.rest.exception.EmployeeNotFoundException;
 import com.wut.directeur.rest.exception.PositionNotFoundException;

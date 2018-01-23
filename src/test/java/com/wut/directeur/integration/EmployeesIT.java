@@ -1,13 +1,18 @@
 package com.wut.directeur.integration;
 
 import com.wut.directeur.DirecteurApplication;
-import com.wut.directeur.data.DepartmentRepository;
-import com.wut.directeur.data.Employee;
-import com.wut.directeur.data.EmployeeRepository;
-import com.wut.directeur.data.Position;
-import com.wut.directeur.data.PositionRepository;
-import com.wut.directeur.data.RoleRepository;
-import com.wut.directeur.rest.dtos.*;
+import com.wut.directeur.data.repository.DepartmentRepository;
+import com.wut.directeur.data.model.Employee;
+import com.wut.directeur.data.repository.EmployeeRepository;
+import com.wut.directeur.data.model.Position;
+import com.wut.directeur.data.repository.PositionRepository;
+import com.wut.directeur.data.repository.RoleRepository;
+import com.wut.directeur.rest.dtos.employee.CreateEmployeeRequestDto;
+import com.wut.directeur.rest.dtos.employee.EmployeeDto;
+import com.wut.directeur.rest.dtos.employee.EmployeesDto;
+import com.wut.directeur.rest.dtos.employee.UpdateEmployeeRequestDto;
+import com.wut.directeur.rest.dtos.response.EndpointResponse;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -123,7 +128,7 @@ public class EmployeesIT {
     public void shouldAddEmployee() throws Exception {
         Position position = objectFactory.createTestPosition();
 
-        CreateEmployeeRequestDto requestDto = new CreateEmployeeRequestDto(EMPLOYEE_NAME, EMPLOYEE_SURNAME, EMPLOYEE_EMAIL, position.getId());
+        CreateEmployeeRequestDto requestDto = new CreateEmployeeRequestDto(EMPLOYEE_NAME, EMPLOYEE_SURNAME, EMPLOYEE_EMAIL, position.getId(), 500);
 
         RequestEntity<CreateEmployeeRequestDto> requestEntity = new RequestEntity<>(requestDto, HttpMethod.POST, new URI("/employees"));
 
@@ -182,7 +187,7 @@ public class EmployeesIT {
     public void shouldThrowOnAddingEmployeeWhenPositionNotFound() throws Exception {
         Position position = objectFactory.createTestPosition();
 
-        CreateEmployeeRequestDto requestDto = new CreateEmployeeRequestDto(EMPLOYEE_NAME, EMPLOYEE_SURNAME, EMPLOYEE_EMAIL, position.getId() + 2);
+        CreateEmployeeRequestDto requestDto = new CreateEmployeeRequestDto(EMPLOYEE_NAME, EMPLOYEE_SURNAME, EMPLOYEE_EMAIL, position.getId() + 2, 500);
 
         RequestEntity<CreateEmployeeRequestDto> requestEntity = new RequestEntity<>(requestDto, HttpMethod.POST, new URI("/employees"));
 
@@ -198,7 +203,7 @@ public class EmployeesIT {
     public void shouldThrowOnUpdatingEmployeeWhenPositionNotFound() throws Exception {
         Employee employee = objectFactory.createTestEmployeeWithPosition();
 
-        UpdateEmployeeRequestDto requestDto = new UpdateEmployeeRequestDto(employee.getId(), employee.getPosition().getId() + 1, "test", "test", "test");
+        UpdateEmployeeRequestDto requestDto = new UpdateEmployeeRequestDto(employee.getId(), employee.getPosition().getId() + 1, "test", "test", "test", 500);
 
         RequestEntity<UpdateEmployeeRequestDto> requestEntity = new RequestEntity<>(requestDto, HttpMethod.PUT, new URI("/employees"));
 

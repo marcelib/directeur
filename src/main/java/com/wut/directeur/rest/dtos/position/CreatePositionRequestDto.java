@@ -1,4 +1,4 @@
-package com.wut.directeur.rest.dtos;
+package com.wut.directeur.rest.dtos.position;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

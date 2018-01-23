@@ -1,8 +1,8 @@
 package com.wut.directeur.rest.dtos.factory;
 
-import com.wut.directeur.data.Employee;
-import com.wut.directeur.rest.dtos.EmployeeDto;
-import com.wut.directeur.rest.dtos.EmployeesDto;
+import com.wut.directeur.data.model.Employee;
+import com.wut.directeur.rest.dtos.employee.EmployeeDto;
+import com.wut.directeur.rest.dtos.employee.EmployeesDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +22,6 @@ public class EmployeeDtoFactory {
     }
 
     public EmployeeDto createEmployeeDto(Employee employee) {
-        return new EmployeeDto(employee.getId(), employee.getName(), employee.getSurname(), employee.getEmail(), employee.getPosition());
+        return new EmployeeDto(employee.getId(), employee.getName(), employee.getSurname(), employee.getEmail(), employee.getPosition(), employee.getSalary());
     }
 }

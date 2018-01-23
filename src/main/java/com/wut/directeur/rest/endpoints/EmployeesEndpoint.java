@@ -1,6 +1,11 @@
 package com.wut.directeur.rest.endpoints;
 
-import com.wut.directeur.rest.dtos.*;
+import com.wut.directeur.rest.dtos.employee.CreateEmployeeRequestDto;
+import com.wut.directeur.rest.dtos.employee.EmployeeDto;
+import com.wut.directeur.rest.dtos.employee.EmployeesDto;
+import com.wut.directeur.rest.dtos.employee.EmployeesFilteringDto;
+import com.wut.directeur.rest.dtos.employee.UpdateEmployeeRequestDto;
+import com.wut.directeur.rest.dtos.response.EndpointResponse;
 import com.wut.directeur.services.EmployeeService;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
