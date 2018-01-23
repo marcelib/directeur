@@ -1,11 +1,16 @@
 package com.braintri.directeur.integration;
 
+import com.braintri.directeur.data.Department;
+import com.braintri.directeur.data.DepartmentRepository;
 import com.braintri.directeur.data.Employee;
 import com.braintri.directeur.data.EmployeeRepository;
 import com.braintri.directeur.data.Position;
 import com.braintri.directeur.data.PositionRepository;
+import com.braintri.directeur.data.Role;
+import com.braintri.directeur.data.RoleRepository;
 import com.braintri.directeur.rest.dtos.UpdateEmployeeRequestDto;
 import com.braintri.directeur.rest.dtos.UpdatePositionRequestDto;
+
 import org.apache.commons.lang3.StringUtils;
 
 
@@ -20,10 +25,15 @@ class TestObjectFactory {
 
     private EmployeeRepository employeeRepository;
     private PositionRepository positionRepository;
+    private DepartmentRepository departmentRepository;
+    private RoleRepository roleRepository;
 
-    TestObjectFactory(EmployeeRepository employeeRepository, PositionRepository positionRepository) {
+    TestObjectFactory(EmployeeRepository employeeRepository, PositionRepository positionRepository,
+                      DepartmentRepository departmentRepository, RoleRepository roleRepository) {
         this.employeeRepository = employeeRepository;
         this.positionRepository = positionRepository;
+        this.departmentRepository = departmentRepository;
+        this.roleRepository = roleRepository;
     }
 
     Employee createTestEmployeeWithPosition() {
@@ -49,18 +59,41 @@ class TestObjectFactory {
     }
 
     Position createTestPosition(String suffix) {
+        Department department = createTestDepartment();
+        Role role = createTestRole();
         Position position = new Position();
         position.setPositionName(POSITION_NAME + suffix);
-        position.setSalary(POSITION_SALARY);
+        position.setMinSalary(POSITION_SALARY);
+        position.setRole(role);
+        position.setDepartment(department);
         positionRepository.save(position);
         return position;
+    }
+
+    Department createTestDepartment() {
+        Department department = new Department();
+        department.setDepartmentName("Zakon feniksa");
+        departmentRepository.save(department);
+        return department;
+    }
+
+    Role createTestRole() {
+        Role role = new Role();
+        role.setName("Mistrz");
+        role.setAccountant(true);
+        role.setAdmin(true);
+        role.setNormal(true);
+        roleRepository.save(role);
+        return role;
     }
 
     UpdatePositionRequestDto createPositionUpdateRequest(Position position) {
         return new UpdatePositionRequestDto(
                 position.getId(),
-                position.getSalary(),
-                position.getPositionName());
+                position.getMinSalary(),
+                position.getPositionName(),
+                position.getRole().getId(),
+                position.getDepartment().getId());
     }
 
     UpdateEmployeeRequestDto createEmployeeUpdateRequest(Employee employee) {

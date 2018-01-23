@@ -1,14 +1,23 @@
 package com.braintri.directeur.services;
 
+import com.braintri.directeur.data.Department;
+import com.braintri.directeur.data.DepartmentRepository;
 import com.braintri.directeur.data.Position;
 import com.braintri.directeur.data.PositionRepository;
+import com.braintri.directeur.data.Role;
+import com.braintri.directeur.data.RoleRepository;
 import com.braintri.directeur.rest.dtos.*;
 import com.braintri.directeur.rest.dtos.factory.PositionDtoFactory;
+import com.braintri.directeur.rest.exception.DepartmentNotFoundException;
 import com.braintri.directeur.rest.exception.PositionNotFoundException;
+import com.braintri.directeur.rest.exception.RoleNotFoundException;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+
 import java.util.List;
 
 @Slf4j
@@ -16,10 +25,14 @@ import java.util.List;
 public class PositionService {
 
     private PositionRepository positionRepository;
+    private DepartmentRepository departmentRepository;
+    private RoleRepository roleRepository;
     private PositionDtoFactory positionDtoFactory;
 
-    public PositionService(PositionRepository positionRepository, PositionDtoFactory positionDtoFactory) {
+    public PositionService(PositionRepository positionRepository, DepartmentRepository departmentRepository, RoleRepository roleRepository, PositionDtoFactory positionDtoFactory) {
         this.positionRepository = positionRepository;
+        this.departmentRepository = departmentRepository;
+        this.roleRepository = roleRepository;
         this.positionDtoFactory = positionDtoFactory;
     }
 
@@ -42,20 +55,37 @@ public class PositionService {
 
     @Transactional
     public void createPosition(CreatePositionRequestDto requestDto) {
+        Department department = departmentRepository.findById(requestDto.getDepartmentId());
+        Role role = roleRepository.findById(requestDto.getRoleId());
+
+        throwIfRolenNotFound(role, requestDto.getRoleId());
+        throwIfDepartmentNotFound(department,requestDto.getDepartmentId());
+
         Position position = new Position();
         position.setPositionName(requestDto.getPositionName());
-        position.setSalary(requestDto.getSalary());
+        position.setMinSalary(requestDto.getSalary());
+        position.setDepartment(department);
+        position.setRole(role);
 
         positionRepository.save(position);
     }
 
     @Transactional
-    public void updatePosition(UpdatePositionRequestDto positionDto) {
-        throwIfPositionNotFound(positionDto.getId());
+    public void updatePosition(UpdatePositionRequestDto requestDto) {
+        Department department = departmentRepository.findById(requestDto.getDepartmentId());
+        Role role = roleRepository.findById(requestDto.getRoleId());
 
-        Position position = positionRepository.findById(positionDto.getId());
-        position.setSalary(positionDto.getSalary());
-        position.setPositionName(positionDto.getPositionName());
+        throwIfRolenNotFound(role, requestDto.getRoleId());
+        throwIfDepartmentNotFound(department,requestDto.getDepartmentId());
+
+        throwIfPositionNotFound(requestDto.getId());
+
+        Position position = new Position();
+        position.setPositionName(requestDto.getPositionName());
+        position.setMinSalary(requestDto.getSalary());
+        position.setDepartment(department);
+        position.setRole(role);
+
         positionRepository.save(position);
     }
 
@@ -69,6 +99,21 @@ public class PositionService {
         if (!positionRepository.exists(positionId)) {
             log.info("No position found with id {}", positionId);
             throw new PositionNotFoundException();
+        }
+    }
+
+
+    private void throwIfDepartmentNotFound(Department department, Long departmentId) {
+        if (department == null) {
+            log.info("No department found with id {}", departmentId);
+            throw new DepartmentNotFoundException();
+        }
+    }
+
+    private void throwIfRolenNotFound(Role role, Long roleId) {
+        if (role == null) {
+            log.info("No role found with id {}", roleId);
+            throw new RoleNotFoundException();
         }
     }
 }

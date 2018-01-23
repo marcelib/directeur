@@ -44,11 +44,11 @@ public class PositionDtoFactoryTest {
         when(employeeRepositoryMock.countByPosition(positionMock2)).thenReturn(POSITION_2_EMPLOYEE_COUNT);
 
         when(positionMock1.getId()).thenReturn(POSITION_ID);
-        when(positionMock1.getSalary()).thenReturn(SALARY);
+        when(positionMock1.getMinSalary()).thenReturn(SALARY);
         when(positionMock1.getPositionName()).thenReturn(POSITION_NAME);
 
         when(positionMock2.getId()).thenReturn(POSITION_ID + 1);
-        when(positionMock2.getSalary()).thenReturn(SALARY);
+        when(positionMock2.getMinSalary()).thenReturn(SALARY);
         when(positionMock2.getPositionName()).thenReturn(POSITION_NAME);
     }
 
@@ -82,7 +82,7 @@ public class PositionDtoFactoryTest {
     private boolean hasPosition(PositionDto positionDto, Position position) {
         return position.getId().equals(positionDto.getId()) &&
                 position.getPositionName().equals(positionDto.getPositionName()) &&
-                position.getSalary().equals(positionDto.getSalary());
+                position.getMinSalary().equals(positionDto.getSalary());
     }
 
     private boolean hasCount(Long count, Long expectedCount) {

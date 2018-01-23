@@ -9,11 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UpdatePositionRequestDto {
+public class DepartmentDto {
 
     private Long id;
-    private Long salary;
-    private String positionName;
-    private Long roleId;
-    private Long departmentId;
+
+    private String departmentName;
 }

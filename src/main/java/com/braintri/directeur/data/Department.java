@@ -5,19 +5,14 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "employee")
+@Table(name = "department")
 @Data
-public class Employee {
+public class Department {
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name="position_id")
-    public Position position;
-    public String name;
-    public String surname;
-    public String email;
+    private String departmentName;
 }

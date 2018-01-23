@@ -11,4 +11,6 @@ public class CreatePositionRequestDto {
 
     private Long salary;
     private String positionName;
+    private Long roleId;
+    private Long departmentId;
 }

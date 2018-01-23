@@ -1,8 +1,11 @@
 package com.braintri.directeur.rest.endpoints;
 
 import com.braintri.directeur.rest.dtos.EndpointResponse;
+import com.braintri.directeur.rest.exception.DepartmentNotFoundException;
 import com.braintri.directeur.rest.exception.EmployeeNotFoundException;
 import com.braintri.directeur.rest.exception.PositionNotFoundException;
+import com.braintri.directeur.rest.exception.RoleNotFoundException;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +34,30 @@ public class ErrorHandlers {
         headers.set(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON);
         return new ResponseEntity<>(
                 new EndpointResponse("error", "position with requested id does not exist"),
+                headers,
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+
+    @ExceptionHandler(DepartmentNotFoundException.class)
+    public ResponseEntity<EndpointResponse> handleEmployeeNotFoundException(DepartmentNotFoundException ex) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON);
+        return new ResponseEntity<>(
+                new EndpointResponse("error", "department with requested id does not exist"),
+                headers,
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+
+    @ExceptionHandler(RoleNotFoundException.class)
+    public ResponseEntity<EndpointResponse> handleRoleNotFoundException(RoleNotFoundException ex) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON);
+        return new ResponseEntity<>(
+                new EndpointResponse("error", "role with requested id does not exist"),
                 headers,
                 HttpStatus.NOT_FOUND
         );
