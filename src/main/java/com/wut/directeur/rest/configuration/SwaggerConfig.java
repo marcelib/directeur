@@ -2,6 +2,7 @@ package com.wut.directeur.rest.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -24,7 +25,7 @@ public class SwaggerConfig {
                 .apiInfo(metaData());
     }
     private ApiInfo metaData() {
-        ApiInfo apiInfo = new ApiInfo(
+        return new ApiInfo(
                 "Directeur Application REST API",
                 "API description for Directeur Application",
                 "1.0",
@@ -32,6 +33,5 @@ public class SwaggerConfig {
                 new Contact("Marceli Baczewski, Witalis Kinasz, Wojciech Sankowski, Filip Biernacki, Adrian Szewczyk", "https://pl.linkedin.com/in/marcelibaczewski", "marceli.baczewski@gmail.com"),
                 "MIT License",
                 "https://opensource.org/licenses/MIT");
-        return apiInfo;
     }
 }
