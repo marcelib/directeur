@@ -12,4 +12,5 @@
     <include file="liquibase/04_create_table_employee.sql"/>
     <include file="liquibase/05_create_table_department_director.sql"/>
     <include file="liquibase/06_example_test.sql"/>
+    <include file="liquibase/07_add_department_statistics.sql"/>
 </databaseChangeLog>
