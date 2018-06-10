@@ -12,5 +12,7 @@ import lombok.NoArgsConstructor;
 public class CreateDepartmentRequestDto {
 
     private String departmentName;
+
     private String departmentDescription;
+    private String departmentDirector;
 }

@@ -1,6 +1,5 @@
 package com.wut.directeur.rest.endpoints;
 
-import com.wut.directeur.rest.dtos.role.RolesDto;
 import com.wut.directeur.rest.dtos.statistics.DepartmentStatisticsDto;
 import com.wut.directeur.services.StatisticsService;
 
@@ -25,7 +24,7 @@ public class StatisticsEndpoint {
     }
 
     @GetMapping(value = "/department")
-    @ApiOperation(value = "Get statistics by departments", response = RolesDto.class)
+    @ApiOperation(value = "Get statistics by departments", response = DepartmentStatisticsDto.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Statistics fetched successfully")})
     public DepartmentStatisticsDto showAll() {
